@@ -6,7 +6,7 @@
 
 using namespace std;
 
- mutex mtx;
+
  vector<thread*> Ts;
 int repetidos;
 template<class T>
@@ -14,6 +14,7 @@ struct CNODE
 {
     T m_data;
     CNODE<T>* m_child[2];
+    mutex mtx;
     CNODE(T x)
     {
         m_data=x;
@@ -23,16 +24,19 @@ struct CNODE
         int h;
         if(x>m_data)h=1; else h=0;
         mtx.lock();
-
-        if(m_child[h])
+        if(!m_child[h])
         {
+            cout<<"INSERTANDO     "<<x<<endl;
+            for(int i=0;i<10000;i++);
+            CNODE<T> *t =new CNODE<T>(x);
+            m_child[h]=t;
+            cout<<"FIN INSERTANDO "<<x<<endl;
             mtx.unlock();
-            return 0;
+            return 1;
         }
-        CNODE<T> *t =new CNODE<T>(x);
-        m_child[h]=t;
+
         mtx.unlock();
-        return 1;
+        return 0;
     }
 };
 template <class T>
@@ -40,6 +44,7 @@ class CBINTREE
 {
     public:
     CNODE<T>* m_root=0;
+    mutex amtx;
     bool m_find(T x, CNODE<T>** &p)//devolver nodo
     {
 //        for(p=&m_root;(*p)&& x!= (*p)->m_data;p=&(*p)->m_child[x>(*p)->m_data]);
@@ -54,10 +59,10 @@ class CBINTREE
 
         if(!(m_root)) //insertar raiz
         {
-            mtx.lock();
+            amtx.lock();
             CNODE<T> *t =new CNODE<T>(x);
             m_root=t;
-            mtx.unlock();
+            amtx.unlock();
             return 1;
         }
 

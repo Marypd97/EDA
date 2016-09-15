@@ -23,7 +23,7 @@ struct CNODE
     {
         int h;
         if(x>m_data)h=1; else h=0;
-        mtx.lock();
+        this->mtx.lock();
         if(!m_child[h])
         {
             cout<<"INSERTANDO     "<<x<<endl;
@@ -31,11 +31,11 @@ struct CNODE
             CNODE<T> *t =new CNODE<T>(x);
             m_child[h]=t;
             cout<<"FIN INSERTANDO "<<x<<endl;
-            mtx.unlock();
+            this->mtx.unlock();
             return 1;
         }
 
-        mtx.unlock();
+        this->mtx.unlock();
         return 0;
     }
 };

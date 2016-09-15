@@ -27,7 +27,7 @@ struct CNODE
         if(!m_child[h])
         {
             cout<<"INSERTANDO     "<<x<<endl;
-            for(int i=0;i<10000;i++);
+            for(int i=0;i<x;i++);
             CNODE<T> *t =new CNODE<T>(x);
             m_child[h]=t;
             cout<<"FIN INSERTANDO "<<x<<endl;
